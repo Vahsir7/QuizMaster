@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Exam Questions - {{ exam.ExamName }}{% endblock %}
+
+{% block navbar %}
+  {% include "admin/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Questions for Exam: {{ exam.ExamName }}</h2>
+  <h4>Exam details :</h4>
+  <table class="table table-striped table-bordered">
+    
+      <tr>
+        <th>Total Duration</th>
+        <th>Exam Deadline</th>
+        <th>Total Questions</th>
+        <th>Total Marks</th>
+      </tr>
+      <tr>
+        <td>{{ exam.TotalDuration }}</td>
+        <td>{{ exam.ExamDate }}</td>
+        <td>{{ exam.TotalQuestions }}</td>
+        <td>{{ exam.TotalMarks }}</td>
+      </tr>
+
+  </table>
+  <a href="{{ url_for('admin.exam_dashboard') }}" class="btn btn-secondary mb-3">Back to Exam Dashboard</a>
+  <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addQuestionModal">
+    Add Question
+  </button>
+
+  <!-- Questions Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th>Sl. no.</th>
+          <th>Question ID</th>
+          <th>Question Statement</th>
+          <th>Marks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for question in questions %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ question.QuestionID }}</td>
+          <td>{{ question.QuestionStatement }}</td>
+          <td>{{ question.Marks }}</td>
+          <td>
+            <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewQuestionModal{{ question.QuestionID }}">
+              View More
+            </button>
+            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editQuestionModal{{ question.QuestionID }}">
+              Edit
+            </button>
+            <form action="{{ url_for('admin.question_delete', exam_id=exam.ExamID, question_id=question.QuestionID) }}" method="POST" style="display:inline-block;">
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this question?');">
+                Delete
+              </button>
+            </form>
+          </td>
+        </tr>
+
+        <!-- View More Modal for Question -->
+        <div class="modal fade" id="viewQuestionModal{{ question.QuestionID }}" tabindex="-1" aria-labelledby="viewQuestionModalLabel{{ question.QuestionID }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="viewQuestionModalLabel{{ question.QuestionID }}">Question Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="mb-3">
+                    <label for="questionStatement{{ question.QuestionID }}" class="form-label">Question Statement</label>
+                    <textarea class="form-control" id="questionStatement{{ question.QuestionID }}" readonly>{{ question.QuestionStatement }}</textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="option1{{ question.QuestionID }}" class="form-label">Option 1 (Mandatory)</label>
+                    <input type="text" class="form-control" id="option1{{ question.QuestionID }}" value="{{ question.Option1 }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="option2{{ question.QuestionID }}" class="form-label">Option 2 (Mandatory)</label>
+                    <input type="text" class="form-control" id="option2{{ question.QuestionID }}" value="{{ question.Option2 }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="option3{{ question.QuestionID }}" class="form-label">Option 3 (Optional)</label>
+                    <input type="text" class="form-control" id="option3{{ question.QuestionID }}" value="{{ question.Option3 }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="option4{{ question.QuestionID }}" class="form-label">Option 4 (Optional)</label>
+                    <input type="text" class="form-control" id="option4{{ question.QuestionID }}" value="{{ question.Option4 }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="correctOption{{ question.QuestionID }}" class="form-label">Correct Option</label>
+                    <select class="form-select" id="correctOption{{ question.QuestionID }}" disabled>
+                      <option value="1" {% if question.CorrectOption == 1 %}selected{% endif %}>1</option>
+                      <option value="2" {% if question.CorrectOption == 2 %}selected{% endif %}>2</option>
+                      <option value="3" {% if question.CorrectOption == 3 %}selected{% endif %}>3</option>
+                      <option value="4" {% if question.CorrectOption == 4 %}selected{% endif %}>4</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="marks{{ question.QuestionID }}" class="form-label">Marks</label>
+                    <input type="number" class="form-control" id="marks{{ question.QuestionID }}" value="{{ question.Marks }}" readonly>
+                  </div>
+                  <div class="mb-3">
+                    <label for="negMarks{{ question.QuestionID }}" class="form-label">Negative Marks (Optional)</label>
+                    <input type="number" class="form-control" id="negMarks{{ question.QuestionID }}" value="{{ question.NegMarks }}" readonly>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Modal for Question -->
+        <div class="modal fade" id="editQuestionModal{{ question.QuestionID }}" tabindex="-1" aria-labelledby="editQuestionModalLabel{{ question.QuestionID }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form method="POST" action="{{ url_for('admin.question_edit', exam_id=exam.ExamID, question_id=question.QuestionID) }}">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="editQuestionModalLabel{{ question.QuestionID }}">Edit Question</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <!-- Editable Question Statement -->
+                  <div class="mb-3">
+                    <label for="editQuestionStatement{{ question.QuestionID }}" class="form-label">Question Statement</label>
+                    <textarea class="form-control" id="editQuestionStatement{{ question.QuestionID }}" name="questionStatement" required>{{ question.QuestionStatement }}</textarea>
+                  </div>
+                  <!-- Editable Options -->
+                  <div class="mb-3">
+                    <label for="editOption1{{ question.QuestionID }}" class="form-label">Option 1</label>
+                    <input type="text" class="form-control" id="editOption1{{ question.QuestionID }}" name="option1" value="{{ question.Option1 }}" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="editOption2{{ question.QuestionID }}" class="form-label">Option 2</label>
+                    <input type="text" class="form-control" id="editOption2{{ question.QuestionID }}" name="option2" value="{{ question.Option2 }}" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="editOption3{{ question.QuestionID }}" class="form-label">Option 3</label>
+                    <input type="text" class="form-control" id="editOption3{{ question.QuestionID }}" name="option3" value="{{ question.Option3 }}">
+                  </div>
+                  <div class="mb-3">
+                    <label for="editOption4{{ question.QuestionID }}" class="form-label">Option 4</label>
+                    <input type="text" class="form-control" id="editOption4{{ question.QuestionID }}" name="option4" value="{{ question.Option4 }}">
+                  </div>
+                  <!-- Editable Correct Option -->
+                  <div class="mb-3">
+                    <label for="editCorrectOption{{ question.QuestionID }}" class="form-label">Correct Option</label>
+                    <select class="form-select" id="editCorrectOption{{ question.QuestionID }}" name="correctOption" required>
+                      <option value="1" {% if question.CorrectOption == 1 %}selected{% endif %}>1</option>
+                      <option value="2" {% if question.CorrectOption == 2 %}selected{% endif %}>2</option>
+                      <option value="3" {% if question.CorrectOption == 3 %}selected{% endif %}>3</option>
+                      <option value="4" {% if question.CorrectOption == 4 %}selected{% endif %}>4</option>
+                    </select>
+                  </div>
+                  <!-- Editable Marks and Negative Marks -->
+                  <div class="mb-3">
+                    <label for="editMarks{{ question.QuestionID }}" class="form-label">Marks</label>
+                    <input type="number" class="form-control" id="editMarks{{ question.QuestionID }}" name="marks" value="{{ question.Marks }}" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="editNegMarks{{ question.QuestionID }}" class="form-label">Negative Marks</label>
+                    <input type="number" class="form-control" id="editNegMarks{{ question.QuestionID }}" name="negMarks" value="{{ question.NegMarks }}">
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- Add Question Modal -->
+<div class="modal fade" id="addQuestionModal" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('admin.question_add', exam_id=exam.ExamID) }}">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Question Statement -->
+          <div class="mb-3">
+            <label for="questionStatement" class="form-label">Question Statement</label>
+            <textarea class="form-control" id="questionStatement" name="questionStatement" required></textarea>
+          </div>
+          <!-- Options -->
+          <div class="mb-3">
+            <label for="option1" class="form-label">Option 1 (Mandatory)</label>
+            <input type="text" class="form-control" id="option1" name="option1" required>
+          </div>
+          <div class="mb-3">
+            <label for="option2" class="form-label">Option 2 (Mandatory)</label>
+            <input type="text" class="form-control" id="option2" name="option2" required>
+          </div>
+          <div class="mb-3">
+            <label for="option3" class="form-label">Option 3 (Optional)</label>
+            <input type="text" class="form-control" id="option3" name="option3">
+          </div>
+          <div class="mb-3">
+            <label for="option4" class="form-label">Option 4 (Optional)</label>
+            <input type="text" class="form-control" id="option4" name="option4">
+          </div>
+          <!-- Correct Option Dropdown -->
+          <div class="mb-3">
+            <label for="correctOption" class="form-label">Correct Option</label>
+            <select class="form-select" id="correctOption" name="correctOption" required>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+          <!-- Marks and Negative Marks -->
+          <div class="mb-3">
+            <label for="marks" class="form-label">Marks</label>
+            <input type="number" class="form-control" id="marks" name="marks" required>
+          </div>
+          <div class="mb-3">
+            <label for="negMarks" class="form-label">Negative Marks (Optional)</label>
+            <input type="number" class="form-control" id="negMarks" name="negMarks">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Add Question</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Chapter{% endblock %}
+
+{% block navbar %}
+  {% include "admin/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Chapter</h2>
+  <form method="POST" action="{{ url_for('admin.chapter_edit', subject_id=chapter.SubjectID, chapter_id=chapter.ChapterID) }}">
+    <div class="mb-3">
+      <label for="name" class="form-label">Chapter Name:</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ chapter.ChapterName }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="chapterDesc" class="form-label">Chapter Description:</label>
+      <textarea class="form-control" id="chapterDesc" name="chapterDesc">{{ chapter.Description }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Edit</button>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

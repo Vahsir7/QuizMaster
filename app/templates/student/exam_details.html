@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h3>{{ exam.ExamName }}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Candidate:</strong> {{ student.Name }}</p>
+                <p><strong>Candidate ID:</strong> {{ student.StudentID }}</p>
+                <p><strong>Total Questions:</strong> {{ exam.TotalQuestions }}</p>
+                <p><strong>Total Marks:</strong> {{ exam.TotalMarks }}</p>
+                <p><strong>Duration:</strong> {{ exam.TotalDuration }} minutes</p>
+                <p><strong>Exam Deadline:</strong> {{ exam.ExamDate.strftime('%d %B %Y %H:%M') }}</p>
+                <p><strong>Chapter:</strong> {{ exam.chapter.ChapterName }}</p>
+                {% if passed %}
+                <button class="btn btn-danger btn-lg mt-3" disabled>Deadline has passed</button>
+                <a href="{{ url_for('student.dashboard', student_id=student_id) }}"
+                   class="btn btn-primary btn mt-3">Go back</a>
+                {% else %}
+                <a href="{{ url_for('student.exam_question', student_id=student_id, exam_id=exam_id, question_id=question_id, attempt_id = attempt_id) }}"
+                   class="btn btn-success btn-lg mt-3">I am ready to begin</a>
+                <a href="{{ url_for('student.dashboard', student_id=student_id) }}"
+                   class="btn btn-primary btn mt-3">Go back</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

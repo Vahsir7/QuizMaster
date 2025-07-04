@@ -1,0 +1,82 @@
+    {% extends "base.html" %}
+
+    {% block title %}Summary{% endblock %}
+
+    {% block navbar %}
+    {% include "admin/navbar.html" %}
+    {% endblock %}
+
+    {% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">Summary</h2>
+        
+        <div class="d-flex gap-3 mb-4">
+            <a href="{{ url_for('admin.user_list') }}" class="btn btn-primary">User List</a>
+            <a href="{{ url_for('admin.exam_attempts') }}" class="btn btn-secondary">Exam Attempts</a>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="card p-4 mb-4">
+            <h4 class="mb-3">Performance Analysis</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Quiz Participation Overview</h5>
+                    <canvas id="quizChart"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <h5>Average Quiz Scores Per Subject</h5>
+                    <canvas id="scoreChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var quizLabels = {{ quiz_labels | tojson }};
+        var quizValues = {{ quiz_values | tojson }};
+        var subjectLabels = {{ subject_labels | tojson }};
+        var subjectValues = {{ subject_values | tojson }};
+
+        // Quiz Participation Chart
+        var ctx1 = document.getElementById('quizChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: quizLabels,
+                datasets: [{
+                    label: 'Users Attempted',
+                    data: quizValues,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // Average Quiz Scores Chart
+        var ctx2 = document.getElementById('scoreChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: subjectLabels,
+                datasets: [{
+                    label: 'Avg Score',
+                    data: subjectValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    </script>
+    {% endblock %}

@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="#">Student Dashboard</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link text-white" href="{{url_for('student.dashboard',student_id = student_id)}}">Exams</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="{{url_for('student.scores', student_id = student_id)}}">Scores</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="{{url_for('student.summary', student_id = student_id)}}">Summary</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="{{url_for('main.login')}}">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Chapter Details{% endblock %}
+
+{% block navbar %}
+  {% include "admin/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Chapter Details</h2>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">{{ chapter.ChapterName }}</h4>
+      <p class="card-text">{{ chapter.Description }}</p>
+      <p class="card-text"><strong>Number of Quizzes:</strong> {{ chapter.exams|length }}</p>
+    </div>
+  </div>
+  <br>
+  <a href="{{ url_for('admin.subject_view', chapter_id=chapter.ChapterID, subject_id=subject_id) }}" class="btn btn-secondary">Back to Chapter View List</a>
+</div>
+{% endblock %}

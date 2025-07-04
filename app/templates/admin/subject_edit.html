@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Subject{% endblock %}
+
+{% block navbar %}
+  {% include "admin/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Edit Subject</h2>
+  <form method="POST" action="{{ url_for('admin.subject_edit', subject_id=subject.SubjectID) }}">
+    <div class="mb-3">
+      <label for="subjectName" class="form-label">Subject Name:</label>
+      <input type="text" class="form-control" id="subjectName" name="name" value="{{ subject.SubjectName }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="subjectDesc" class="form-label">Subject Description:</label>
+      <textarea class="form-control" id="subjectDesc" name="subjectDesc" required>{{ subject.Description }}</textarea>
+    </div>
+    <input type = "hidden" id = "id" name = "id" value="{{subject.SubjectID}}">
+    <button type="submit" class="btn btn-primary">Confirm Edit</button>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+{% endblock %}

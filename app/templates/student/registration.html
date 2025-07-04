@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <title>Student Registration</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="jumbotron-fluid">
+                <h1 class="display-4">New Student Registration</h1>
+            </div>
+        <hr>
+        {% if error %}
+        <div class="alert alert-danger">
+            <strong>{{ error }}</strong>
+        </div>
+        <hr>
+        {% endif %}
+        
+        (Note: All fields marked with * are required)
+        <form action="/student/register" method="POST">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="name">Full Name:*</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ name or '' }}" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="email">Email:*</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ email or '' }}" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="dob">Date of Birth:*</label>
+                    <input type="date" class="form-control" id="dob" name="dob" value="{{ dob or '' }}" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="clgName ">College name:</label>
+                    <input type="text" class="form-control" id="clgName" name="clgName" value="{{ clgName or '' }}" >
+                </div>
+                <div class="col-md-4">
+                    <label for="degree" class="form-label">Degree Domain:</label>
+                    <select class="form-select" id="degree" name="degree">
+                        <option value="DS">Data Science</option>
+                        <option value="ES">Electronic Science</option>
+                        <option value="CSE">Computer Science and Engineering</option>
+                        <option value="ECE">Electronic Communication and Engineering</option>
+                        <option value="IT">Information Technology</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="password">Password:*</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="confirmPassword">Confirm Password:*</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </div>
+            </div>
+        </form>
+    </body>
+</html>

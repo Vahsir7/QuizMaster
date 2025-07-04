@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}New Exam{% endblock %}
+
+{% block navbar %}
+  {% include "admin/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Add New Exam</h2>
+  
+  <!-- Display flashed messages -->
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div class="alert alert-danger">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  
+  {% if edit %}
+  <form method="POST" action="{{ url_for('admin.exam_edit', exam_id = exam_id) }}">
+  {% else %}
+  <form method="POST" action="{{ url_for('admin.exam_add') }}">
+  {% endif %}
+    <!-- Subject Selection Section -->
+    <div class="mb-3">
+      <label for="subject" class="form-label">Subject:</label>
+      <select id="subject" name="subject" class="form-select" required {% if confirmed %}disabled{% endif %}>
+        <option value="">Select a subject</option>
+        {% for subj in subjects %}
+          {% if confirmed and subj.SubjectID == selected_subject %}
+            <option value="{{ subj.SubjectID }}" selected>{{ subj.SubjectName }}</option>
+          {% else %}
+            <option value="{{ subj.SubjectID }}">{{ subj.SubjectName }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      {% if not confirmed %}
+        <button type="submit" name="action" value="confirm" class="btn btn-primary">Confirm</button>
+      {% else %}
+        <button type="submit" name="action" value="change" class="btn btn-secondary">Change</button>
+      {% endif %}
+    </div>
+    
+    <!-- Preserve the confirmed subject via a hidden field -->
+    {% if confirmed %}
+      <input type="hidden" name="selected_subject" value="{{ selected_subject }}">
+    {% endif %}
+    
+    <!-- Exam Details Section (enabled only if subject is confirmed) -->
+    <fieldset {% if not confirmed %}disabled{% endif %}>
+      <div class="mb-3">
+        <label for="chapter" class="form-label">Chapter:</label>
+        <select id="chapter" name="chapter" class="form-select">
+          <option value="">Select a chapter</option>
+          {% for chap in chapters %}
+            <option value="{{ chap.ChapterID }}">{{ chap.ChapterName }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="examName" class="form-label">Exam Name:</label>
+        <input type="text" class="form-control" id="examName" name="examName" value = "{{ examName or ' ' }}">
+      </div>
+      <div class="mb-3">
+        <label for="totalDuration" class="form-label">Total Duration (minutes):</label>
+        <input type="number" class="form-control" id="totalDuration" name="totalDuration" value = "{{ totalDuration or ' ' }}">
+      </div>
+      <div class="mb-3">
+        <label for="examDate" class="form-label">Deadline:</label>
+        <input type="date" class="form-control" id="examDate" name="examDate" value = "{{ examDate or ' ' }}">
+      </div>
+      <button type="submit" name="action" value="save" class="btn btn-primary">Save Exam</button>
+    </fieldset>
+  </form>
+  <a href="{{ url_for('admin.exam_dashboard') }}" class="btn btn-secondary mt-3">Cancel</a>
+</div>
+{% endblock %}

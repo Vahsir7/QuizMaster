@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block navbar %}
+  {% include "student/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Upcoming Quizzes</h2>
+
+  <!-- Search & Filter Form -->
+  <form method="POST" class="d-flex flex-wrap gap-3 align-items-center">
+    <!-- Search Bar -->
+    <input type="text" name="search_query" class="form-control w-25" placeholder="Search Exams">
+
+    <!-- Subject Dropdown -->
+    <select name="subject" class="form-select w-25">
+      <option value="All">All Subjects</option>
+      {% for subject in subjects %}
+      <option value="{{ subject.SubjectID }}">{{ subject.SubjectName }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- Chapter Dropdown -->
+    <select name="chapter" class="form-select w-25">
+      <option value="All">All Chapters</option>
+      {% for chapter in chapters %}
+      <option value="{{ chapter.ChapterID }}">{{ chapter.ChapterName }}</option>
+      {% endfor %}
+    </select>
+
+    <label>View Past Exams</label>
+    <input type="checkbox" name="past" class="form-check-input" {% if request.form.get('past') %}checked{% endif %}>
+    
+    <!-- Search Button -->
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+
+  <div class="container mt-4">
+      Applied filters: 
+      {% for filter in filters %}
+          {% if filter.strip() %}
+              <span class="badge bg-primary">{{ filter }}</span>
+          {% endif %}
+      {% endfor %}
+  </div>
+
+  <!-- Exams Table -->
+  <table class="table table-bordered mt-3">
+    <thead class="table-primary">
+      <tr>
+        <th>Exam ID</th>
+        <th>Exam Name</th>
+        <th>Total Marks</th>
+        <th>Total Questions</th>
+        <th>Total Duration</th>
+        <th>Exam Deadline</th>
+        <th>Chapter</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for exam in exams %}
+      <tr>
+        <td>{{ exam.ExamID }}</td>
+        <td>{{ exam.ExamName }}</td>
+        <td>{{ exam.TotalMarks }}</td>
+        <td>{{ exam.TotalQuestions }}</td>
+        <td>{{ exam.TotalDuration }}</td>
+        <td>{{ exam.ExamDate.strftime('%Y-%m-%d %H:%M') }}</td>
+        <td>{{ exam.chapter.ChapterName }}</td>
+        <td>
+          <a href="{{url_for('student.exam_start',student_id = student_id, exam_id = exam.ExamID)}}" class="btn btn-success btn-sm">Start</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

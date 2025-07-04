@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+    {% include "student/navbar.html" %}
+{% endblock %}
+
+{% block title %}My Attempts{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">My Exam Attempts</h2>
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Sl No</th>
+                <th>Attempt ID</th>
+                <th>Exam Name</th>
+                <th>Chapter Name</th>
+                <th>Date attempted</th>
+                <th>Score Obtained</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in attempts %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ attempt.AttemptID}}</td>
+                <td>{{ attempt.exam.ExamName }}</td>
+                <td>{{ attempt.exam.chapter.ChapterName }}</td>
+                <td>{{ attempt.AttemptDate.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ attempt.Marks }} / {{ attempt.exam.TotalMarks }}</td>
+                <td>
+                    <a href="{{ url_for('student.exam_end', student_id=student_id, exam_id=attempt.ExamID, attempt_id=attempt.AttemptID) }}" 
+                       class="btn btn-primary">View More</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
