@@ -1,12 +1,16 @@
 from flask import Flask
 from flask_migrate import Migrate
 from .models import db
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///quiz_master.db'
-    app.config['SECRET_KEY'] = '22f3000947ProjectMad1'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     db.init_app(app)
@@ -30,9 +34,9 @@ def create_app():
         if not admin:
             admin = Admin(
                 AdminID = 1,
-                Name = 'admin',
-                Email = 'admin@quiz.com',
-                Password = '1234'
+                Name = os.getenv('Admin_Username'),
+                Email = os.getenv('Admin_email'),
+                Password = os.getenv('Admin_Password')
             )
             db.session.add(admin)
             db.session.commit()
