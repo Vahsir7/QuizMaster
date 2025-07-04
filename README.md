@@ -1,3 +1,6 @@
+## Access deployed version on render
+<h4>follow this link ==> <a href = "https://quizmaster-k36y.onrender.com">https://quizmaster-k36y.onrender.com</a></h4>
+
 ## Installation Steps
 
 1. **Create a Virtual Environment**
